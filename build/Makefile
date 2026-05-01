@@ -142,6 +142,30 @@ client/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/build
 .PHONY : client/fast
 
+src/chat_server.o: src/chat_server.cpp.o
+.PHONY : src/chat_server.o
+
+# target to build an object file
+src/chat_server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/chat_server.cpp.o
+.PHONY : src/chat_server.cpp.o
+
+src/chat_server.i: src/chat_server.cpp.i
+.PHONY : src/chat_server.i
+
+# target to preprocess a source file
+src/chat_server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/chat_server.cpp.i
+.PHONY : src/chat_server.cpp.i
+
+src/chat_server.s: src/chat_server.cpp.s
+.PHONY : src/chat_server.s
+
+# target to generate assembly for a file
+src/chat_server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/chat_server.cpp.s
+.PHONY : src/chat_server.cpp.s
+
 src/client.o: src/client.cpp.o
 .PHONY : src/client.o
 
@@ -165,6 +189,54 @@ src/client.s: src/client.cpp.s
 src/client.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/client.cpp.s
 .PHONY : src/client.cpp.s
+
+src/client_session.o: src/client_session.cpp.o
+.PHONY : src/client_session.o
+
+# target to build an object file
+src/client_session.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/client_session.cpp.o
+.PHONY : src/client_session.cpp.o
+
+src/client_session.i: src/client_session.cpp.i
+.PHONY : src/client_session.i
+
+# target to preprocess a source file
+src/client_session.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/client_session.cpp.i
+.PHONY : src/client_session.cpp.i
+
+src/client_session.s: src/client_session.cpp.s
+.PHONY : src/client_session.s
+
+# target to generate assembly for a file
+src/client_session.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/client_session.cpp.s
+.PHONY : src/client_session.cpp.s
+
+src/command_dispatcher.o: src/command_dispatcher.cpp.o
+.PHONY : src/command_dispatcher.o
+
+# target to build an object file
+src/command_dispatcher.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/command_dispatcher.cpp.o
+.PHONY : src/command_dispatcher.cpp.o
+
+src/command_dispatcher.i: src/command_dispatcher.cpp.i
+.PHONY : src/command_dispatcher.i
+
+# target to preprocess a source file
+src/command_dispatcher.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/command_dispatcher.cpp.i
+.PHONY : src/command_dispatcher.cpp.i
+
+src/command_dispatcher.s: src/command_dispatcher.cpp.s
+.PHONY : src/command_dispatcher.s
+
+# target to generate assembly for a file
+src/command_dispatcher.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/command_dispatcher.cpp.s
+.PHONY : src/command_dispatcher.cpp.s
 
 src/server.o: src/server.cpp.o
 .PHONY : src/server.o
@@ -190,6 +262,33 @@ src/server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server.cpp.s
 .PHONY : src/server.cpp.s
 
+src/utils.o: src/utils.cpp.o
+.PHONY : src/utils.o
+
+# target to build an object file
+src/utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/utils.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/utils.cpp.o
+.PHONY : src/utils.cpp.o
+
+src/utils.i: src/utils.cpp.i
+.PHONY : src/utils.i
+
+# target to preprocess a source file
+src/utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/utils.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/utils.cpp.i
+.PHONY : src/utils.cpp.i
+
+src/utils.s: src/utils.cpp.s
+.PHONY : src/utils.s
+
+# target to generate assembly for a file
+src/utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/utils.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/client.dir/build.make CMakeFiles/client.dir/src/utils.cpp.s
+.PHONY : src/utils.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -200,12 +299,24 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... client"
 	@echo "... server"
+	@echo "... src/chat_server.o"
+	@echo "... src/chat_server.i"
+	@echo "... src/chat_server.s"
 	@echo "... src/client.o"
 	@echo "... src/client.i"
 	@echo "... src/client.s"
+	@echo "... src/client_session.o"
+	@echo "... src/client_session.i"
+	@echo "... src/client_session.s"
+	@echo "... src/command_dispatcher.o"
+	@echo "... src/command_dispatcher.i"
+	@echo "... src/command_dispatcher.s"
 	@echo "... src/server.o"
 	@echo "... src/server.i"
 	@echo "... src/server.s"
+	@echo "... src/utils.o"
+	@echo "... src/utils.i"
+	@echo "... src/utils.s"
 .PHONY : help
 
 

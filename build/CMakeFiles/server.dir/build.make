@@ -83,17 +83,81 @@ CMakeFiles/server.dir/src/server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/server.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhd/chat_project/src/server.cpp -o CMakeFiles/server.dir/src/server.cpp.s
 
+CMakeFiles/server.dir/src/chat_server.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/chat_server.cpp.o: /home/zhd/chat_project/src/chat_server.cpp
+CMakeFiles/server.dir/src/chat_server.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhd/chat_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/server.dir/src/chat_server.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/chat_server.cpp.o -MF CMakeFiles/server.dir/src/chat_server.cpp.o.d -o CMakeFiles/server.dir/src/chat_server.cpp.o -c /home/zhd/chat_project/src/chat_server.cpp
+
+CMakeFiles/server.dir/src/chat_server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/server.dir/src/chat_server.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhd/chat_project/src/chat_server.cpp > CMakeFiles/server.dir/src/chat_server.cpp.i
+
+CMakeFiles/server.dir/src/chat_server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/chat_server.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhd/chat_project/src/chat_server.cpp -o CMakeFiles/server.dir/src/chat_server.cpp.s
+
+CMakeFiles/server.dir/src/client_session.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/client_session.cpp.o: /home/zhd/chat_project/src/client_session.cpp
+CMakeFiles/server.dir/src/client_session.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhd/chat_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/server.dir/src/client_session.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/client_session.cpp.o -MF CMakeFiles/server.dir/src/client_session.cpp.o.d -o CMakeFiles/server.dir/src/client_session.cpp.o -c /home/zhd/chat_project/src/client_session.cpp
+
+CMakeFiles/server.dir/src/client_session.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/server.dir/src/client_session.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhd/chat_project/src/client_session.cpp > CMakeFiles/server.dir/src/client_session.cpp.i
+
+CMakeFiles/server.dir/src/client_session.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/client_session.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhd/chat_project/src/client_session.cpp -o CMakeFiles/server.dir/src/client_session.cpp.s
+
+CMakeFiles/server.dir/src/command_dispatcher.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/command_dispatcher.cpp.o: /home/zhd/chat_project/src/command_dispatcher.cpp
+CMakeFiles/server.dir/src/command_dispatcher.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhd/chat_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/server.dir/src/command_dispatcher.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/command_dispatcher.cpp.o -MF CMakeFiles/server.dir/src/command_dispatcher.cpp.o.d -o CMakeFiles/server.dir/src/command_dispatcher.cpp.o -c /home/zhd/chat_project/src/command_dispatcher.cpp
+
+CMakeFiles/server.dir/src/command_dispatcher.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/server.dir/src/command_dispatcher.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhd/chat_project/src/command_dispatcher.cpp > CMakeFiles/server.dir/src/command_dispatcher.cpp.i
+
+CMakeFiles/server.dir/src/command_dispatcher.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/command_dispatcher.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhd/chat_project/src/command_dispatcher.cpp -o CMakeFiles/server.dir/src/command_dispatcher.cpp.s
+
+CMakeFiles/server.dir/src/utils.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/utils.cpp.o: /home/zhd/chat_project/src/utils.cpp
+CMakeFiles/server.dir/src/utils.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhd/chat_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/server.dir/src/utils.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/utils.cpp.o -MF CMakeFiles/server.dir/src/utils.cpp.o.d -o CMakeFiles/server.dir/src/utils.cpp.o -c /home/zhd/chat_project/src/utils.cpp
+
+CMakeFiles/server.dir/src/utils.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/server.dir/src/utils.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhd/chat_project/src/utils.cpp > CMakeFiles/server.dir/src/utils.cpp.i
+
+CMakeFiles/server.dir/src/utils.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/utils.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhd/chat_project/src/utils.cpp -o CMakeFiles/server.dir/src/utils.cpp.s
+
 # Object files for target server
 server_OBJECTS = \
-"CMakeFiles/server.dir/src/server.cpp.o"
+"CMakeFiles/server.dir/src/server.cpp.o" \
+"CMakeFiles/server.dir/src/chat_server.cpp.o" \
+"CMakeFiles/server.dir/src/client_session.cpp.o" \
+"CMakeFiles/server.dir/src/command_dispatcher.cpp.o" \
+"CMakeFiles/server.dir/src/utils.cpp.o"
 
 # External object files for target server
 server_EXTERNAL_OBJECTS =
 
 server: CMakeFiles/server.dir/src/server.cpp.o
+server: CMakeFiles/server.dir/src/chat_server.cpp.o
+server: CMakeFiles/server.dir/src/client_session.cpp.o
+server: CMakeFiles/server.dir/src/command_dispatcher.cpp.o
+server: CMakeFiles/server.dir/src/utils.cpp.o
 server: CMakeFiles/server.dir/build.make
 server: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zhd/chat_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zhd/chat_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable server"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/server.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

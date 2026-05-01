@@ -3,20 +3,31 @@
 #include <thread>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include<atomic>
+
+#include "utils.h"
+
+std::atomic<bool>running{true};
 
 // 接收消息的线程函数
 void receive_handler(int sockfd) {
     char buffer[1024];
-    while (true) {
+    while (running) {
         ssize_t n = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
         if (n <= 0) {
             std::cout << "\n[系统] 与服务器断开连接。" << std::endl;
-            exit(0); // 简单粗暴：服务器断了，客户端直接退出
+            running =false;
+            break;
         }
         buffer[n] = '\0';
-        // 打印收到的消息（可能会打断你正在输入的文字）
         std::cout << "\r" << buffer<<"> " << std::flush;
     }
+}
+
+void request_shutdown(int fd)
+{
+    running = false;
+    shutdown(fd, SHUT_RDWR);
 }
 
 int main() {
@@ -41,22 +52,37 @@ int main() {
         std::getline(std::cin, name);
     }
     std::string packet=name+"\n";
-    send(sockfd, packet.c_str(), packet.size(), 0);
+    if(!send_text(sockfd, packet)) {
+        std::cerr << "Failed to send name." << std::endl;
+        running=false;
+        close(sockfd);
+        return 1;
+    }
     // 开启接收线程
     std::thread t(receive_handler, sockfd);
-    t.detach();
 
     // 主线程负责发送
     std::string input;
-    while (true) {
+    while (running) {
         std::cout << "> " << std::flush;
-        if (!std::getline(std::cin, input)) break;
+        if (!std::getline(std::cin, input)){
+            request_shutdown(sockfd);
+            break;
+        }
         std::string packet=input+"\n";
         if (!input.empty()) {
-            send(sockfd, packet.c_str(), packet.size(), 0);
+            if(!send_text(sockfd, packet)) {
+                std::cerr << "Failed to send message." << std::endl;
+                request_shutdown(sockfd);
+                break;
+            }
+            if(input=="/quit" || input=="/exit") {
+                request_shutdown(sockfd);
+                break;
+            }
         }
     }
-
+    t.join();
     close(sockfd);
     return 0;
 }

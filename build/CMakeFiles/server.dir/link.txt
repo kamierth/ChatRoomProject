@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/server.dir/src/server.cpp.o -o server 
+/usr/bin/c++ CMakeFiles/server.dir/src/server.cpp.o CMakeFiles/server.dir/src/chat_server.cpp.o CMakeFiles/server.dir/src/client_session.cpp.o CMakeFiles/server.dir/src/command_dispatcher.cpp.o CMakeFiles/server.dir/src/utils.cpp.o -o server 
