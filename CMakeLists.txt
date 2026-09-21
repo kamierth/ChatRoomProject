@@ -17,6 +17,13 @@ set(SERVER_SRC
     ${CMAKE_SOURCE_DIR}/src/server/main.cpp
 )
 
+set(CLIENT_SRC
+    ${CMAKE_SOURCE_DIR}/src/client/chat_client.cpp
+    ${CMAKE_SOURCE_DIR}/src/client/main.cpp
+)
+
 add_executable(server ${SERVER_SRC})
+add_executable(client ${CLIENT_SRC})
 
 target_include_directories(server PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(client PRIVATE ${CMAKE_SOURCE_DIR}/include)
