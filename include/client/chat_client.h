@@ -28,9 +28,6 @@ namespace chat
         bool handle_socket_recv();
         bool handle_socket_send();
 
-        void handle_protocol_in(std::string &buffer);
-        void handle_protocol_out(std::string &buffer);
-
         void update_socket_events(int events);
         void clean_up() noexcept;
 

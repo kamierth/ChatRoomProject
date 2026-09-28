@@ -67,3 +67,22 @@ void chat::ClientConnection::consume_sent(size_t size)
     }
     send_buffer_.erase(0, size);
 }
+
+bool chat::ClientConnection::receive_paused() const noexcept
+{
+    return receive_paused_;
+}
+
+bool chat::ClientConnection::refresh_backpressure_state() noexcept
+{
+    const bool previous = receive_paused_;
+    if (!receive_paused_ && send_buffer_.size() >= send_high_watermark)
+    {
+        receive_paused_ = true;
+    }
+    else if (receive_paused_ && send_buffer_.size() <= send_low_watermark)
+    {
+        receive_paused_ = false;
+    }
+    return previous != receive_paused_;
+}

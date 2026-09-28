@@ -8,22 +8,59 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# file(GLOB SERVER_SRC ${CMAKE_SOURCE_DIR}/src/server/*.cpp)
-set(SERVER_SRC
+set(CHAT_WARNING_OPTIONS
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wconversion
+    -Wsign-conversion
+)
+
+add_library(chat_common_lib
+    ${CMAKE_SOURCE_DIR}/src/common/logger.cpp
+)
+
+target_include_directories(chat_common_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+target_compile_options(chat_common_lib PRIVATE ${CHAT_WARNING_OPTIONS})
+
+add_library(chat_server_lib
     ${CMAKE_SOURCE_DIR}/src/server/chat_room.cpp
     ${CMAKE_SOURCE_DIR}/src/server/chat_service.cpp
     ${CMAKE_SOURCE_DIR}/src/server/client_connection.cpp
     ${CMAKE_SOURCE_DIR}/src/server/epoll_server.cpp
-    ${CMAKE_SOURCE_DIR}/src/server/main.cpp
 )
 
-set(CLIENT_SRC
+target_include_directories(chat_server_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+target_compile_options(chat_server_lib PRIVATE ${CHAT_WARNING_OPTIONS})
+
+target_link_libraries(chat_server_lib PRIVATE chat_common_lib)
+
+add_executable(server ${CMAKE_SOURCE_DIR}/src/server/main.cpp)
+
+target_link_libraries(server PRIVATE chat_server_lib)
+
+target_compile_options(server PRIVATE ${CHAT_WARNING_OPTIONS})
+
+add_library(chat_client_lib
     ${CMAKE_SOURCE_DIR}/src/client/chat_client.cpp
-    ${CMAKE_SOURCE_DIR}/src/client/main.cpp
 )
 
-add_executable(server ${SERVER_SRC})
-add_executable(client ${CLIENT_SRC})
+target_include_directories(chat_client_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-target_include_directories(server PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(client PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_options(chat_client_lib PRIVATE ${CHAT_WARNING_OPTIONS})
+
+target_link_libraries(chat_client_lib PRIVATE chat_common_lib)
+
+add_executable(client ${CMAKE_SOURCE_DIR}/src/client/main.cpp)
+
+target_link_libraries(client PRIVATE chat_client_lib)
+
+target_compile_options(client PRIVATE ${CHAT_WARNING_OPTIONS})
+
+include(CTest)
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

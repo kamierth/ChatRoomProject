@@ -14,6 +14,9 @@
 - 查看在线用户
 - 用户加入和离开通知
 - 服务端非阻塞收发与发送缓冲区
+- 发送队列高低水位背压与慢客户端断开保护
+- 通过 `signalfd` 处理 `SIGINT`/`SIGTERM` 并安全退出
+- 带时间戳和级别过滤的线程安全日志
 - 客户端同时处理终端输入和服务器消息
 - 支持使用管道向客户端输入消息
 - 支持使用 `nc` 作为测试客户端
@@ -70,6 +73,8 @@ cmake --build build -j
 ```
 
 `0.0.0.0` 表示监听本机所有 IPv4 网络接口。
+
+按下 `Ctrl+C` 或向服务端发送 `SIGTERM` 时，信号会通过 `signalfd` 进入 `epoll` 事件循环。服务端停止接受新连接，关闭现有连接并统一释放资源后正常退出。
 
 ### 使用项目客户端连接
 
@@ -159,6 +164,8 @@ TCP 本身没有消息边界，因此服务端和客户端都会维护接收缓�
 ```text
 .
 ├── include
+│   ├── common
+│   │   └── logger.h
 │   ├── client
 │   │   └── chat_client.h
 │   └── server
@@ -167,6 +174,8 @@ TCP 本身没有消息边界，因此服务端和客户端都会维护接收缓�
 │       ├── client_connection.h
 │       └── epoll_server.h
 ├── src
+│   ├── common
+│   │   └── logger.cpp
 │   ├── client
 │   │   ├── chat_client.cpp
 │   │   └── main.cpp
@@ -176,6 +185,21 @@ TCP 本身没有消息边界，因此服务端和客户端都会维护接收缓�
 │       ├── client_connection.cpp
 │       ├── epoll_server.cpp
 │       └── main.cpp
+├── tests
+│   ├── integration
+│   │   └── test_chat_server.cpp
+│   ├── support
+│   │   └── test_helpers.h
+│   ├── unit
+│   │   ├── test_chat_room.cpp
+│   │   ├── test_chat_service.cpp
+│   │   ├── test_client_connection.cpp
+│   │   ├── test_logger.cpp
+│   │   └── test_main.cpp
+│   └── CMakeLists.txt
+├── scripts
+│   ├── load_test.py
+│   └── slow_client_test.py
 ├── CMakeLists.txt
 ├── LICENSE
 └── README.md
@@ -186,7 +210,9 @@ TCP 本身没有消息边界，因此服务端和客户端都会维护接收缓�
 ### 服务端
 
 - `EpollServer`：创建监听 Socket，通过 `epoll` 接收连接并处理客户端读写事件。
+- `EpollServer` 同时监听 `signalfd`，负责处理 `SIGINT`、`SIGTERM` 和服务端停机清理。
 - `ClientConnection`：保存单个客户端的接收缓冲区和发送缓冲区，处理半包与部分发送。
+- 当单个客户端的待发送数据达到 256 KiB 时，服务端暂时停止读取该客户端的数据；队列降到 128 KiB 后恢复读取。若队列达到 1 MiB 硬上限，服务端会断开该慢客户端，避免其持续占用内存。
 - `ChatService`：解析普通消息和聊天命令，生成消息投递结果。
 - `ChatRoom`：维护文件描述符与用户名之间的映射，处理加入、离开、改名和用户查询。
 
@@ -217,6 +243,98 @@ EpollServer 向目标客户端发送结果
 
 客户端 Socket 在连接成功后设置为非阻塞模式。无法一次发送完的数据会保留在发送缓冲区，等待下一次 `POLLOUT` 事件后继续发送。
 
+### 日志
+
+日志模块提供 `DEBUG`、`INFO`、`WARN` 和 `ERROR` 四个级别，默认输出 `INFO` 及以上日志。输出包含毫秒级时间戳：
+
+```text
+[2026-09-28 16:20:31.125] [INFO] server started port=8080
+[2026-09-28 16:20:35.042] [INFO] client connected fd=8
+[2026-09-28 16:20:42.517] [ERROR] accept4: Too many open files (errno=24)
+```
+
+日志输出由互斥锁保护，可以安全用于后续的多线程版本。`system_error()` 接收调用现场保存的 `errno`，用于记录系统调用名称、错误文本和错误编号。聊天正文仍写入标准输出，不与运行日志混合。
+
+## 自动化测试
+
+项目使用 CTest 管理测试。正常构建后执行：
+
+```bash
+ctest --test-dir build --output-on-failure
+```
+
+测试分为两部分：
+
+- `chat_unit_tests`：覆盖 `ChatRoom`、`ChatService`、`ClientConnection` 和日志级别的核心行为、错误分支、消息拆分和缓冲区限制。
+- `chat_integration_tests`：启动真实的 `EpollServer` 子进程，通过两个 TCP 客户端验证加入、广播、私聊、改名、用户列表和退出流程。
+
+只运行单元测试：
+
+```bash
+ctest --test-dir build -R chat_unit_tests --output-on-failure
+```
+
+只运行集成测试：
+
+```bash
+ctest --test-dir build -R chat_integration_tests --output-on-failure
+```
+
+连续运行集成测试以检查稳定性：
+
+```bash
+ctest --test-dir build \
+    -R chat_integration_tests \
+    --repeat until-fail:20 \
+    --output-on-failure
+```
+
+不需要测试时，可以关闭测试目标：
+
+```bash
+cmake -S . -B build -DBUILD_TESTING=OFF
+```
+
+## 压力测试
+
+完整的测试环境、测试数据、结果分析和限制说明见 [性能与稳定性测试报告](docs/PERFORMANCE_REPORT.md)。
+
+压力测试不属于默认 CTest，运行前需要先启动服务端：
+
+```bash
+./build/bin/server
+```
+
+然后在另一个终端执行：
+
+```bash
+python3 scripts/load_test.py \
+    --host 127.0.0.1 \
+    --port 8080 \
+    --clients 100 \
+    --messages 20
+```
+
+脚本会持续读取服务端广播，避免把正常吞吐测试误变成慢客户端测试，并输出连接数、发送消息数、接收数据量、发送速率、总耗时和错误数量。
+
+验证慢客户端不会拖垮其他连接：
+
+```bash
+python3 scripts/slow_client_test.py --host 127.0.0.1 --port 8080
+```
+
+该脚本会建立一个不再读取数据的慢客户端和一个持续收发的正常客户端，制造足够多的广播数据，然后通过 `/list` 验证慢客户端已被移除、正常客户端仍然在线。
+
+建议逐步增加负载：
+
+```bash
+python3 scripts/load_test.py --clients 10 --messages 10
+python3 scripts/load_test.py --clients 50 --messages 20
+python3 scripts/load_test.py --clients 100 --messages 20
+```
+
+聊天室会将一条群聊消息投递给所有在线用户，因此总投递量大约为 `客户端数 × 每客户端消息数 × 在线客户端数`。提高并发数前可以通过 `ulimit -n` 检查当前进程允许打开的文件描述符数量。
+
 ## 当前限制
 
 - 仅支持 Linux。
@@ -231,11 +349,8 @@ EpollServer 向目标客户端发送结果
 ## 后续计划
 
 - 通过命令行参数配置服务器地址和端口
-- 增加单元测试和端到端测试
-- 增加信号处理和服务端优雅停机
 - 支持域名解析与 IPv6
 - 增加结构化协议、错误码和协议版本
-- 增加日志级别和更完整的运行状态输出
 
 ## License
 

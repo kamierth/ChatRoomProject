@@ -1,4 +1,5 @@
 #include "client/chat_client.h"
+#include "common/logger.h"
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -50,7 +51,7 @@ void chat::ChatClient::run()
             {
                 continue;
             }
-            std::perror("poll");
+            chat::log::system_error("client poll", errno);
             break;
         }
         if (fds_[0].revents & (POLLIN | POLLHUP))
@@ -96,7 +97,7 @@ bool chat::ChatClient::connect_server()
     socket_fd_ = ::socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd_ == -1)
     {
-        std::perror("socket");
+        chat::log::system_error("create client socket", errno);
         return false;
     }
     sockaddr_in server_addr{};
@@ -104,15 +105,16 @@ bool chat::ChatClient::connect_server()
     server_addr.sin_port = htons(port_);
     if (::inet_pton(AF_INET, server_ip_.c_str(), &server_addr.sin_addr) != 1)
     {
-        std::cerr << ("Invalid IPv4 address");
+        chat::log::error("invalid IPv4 address: " + server_ip_);
         return false;
     }
     if (::connect(socket_fd_, reinterpret_cast<sockaddr *>(&server_addr), sizeof(server_addr)) == -1)
     {
-        std::perror("connect");
+        chat::log::system_error("connect", errno);
         return false;
     }
-    std::cout << "Connected to " << server_ip_ << ':' << port_ << '\n';
+    chat::log::info(
+        "connected to " + server_ip_ + ':' + std::to_string(port_));
     return true;
 }
 
@@ -121,12 +123,12 @@ bool chat::ChatClient::set_nonblocking()
     int flags = ::fcntl(socket_fd_, F_GETFL, 0);
     if (flags == -1)
     {
-        std::perror("fcntl F_GETFL");
+        chat::log::system_error("fcntl F_GETFL", errno);
         return false;
     }
     if (::fcntl(socket_fd_, F_SETFL, flags | O_NONBLOCK) == -1)
     {
-        std::perror("fcntl F_SETFL");
+        chat::log::system_error("fcntl F_SETFL", errno);
         return false;
     }
     return true;
@@ -173,7 +175,7 @@ bool chat::ChatClient::handle_stdin()
         {
             return true;
         }
-        std::perror("read stdin");
+        chat::log::system_error("read standard input", errno);
         return false;
     }
 }
@@ -189,7 +191,6 @@ void chat::ChatClient::handle_stdout()
         }
         std::string buffer = recv_buffer_.substr(0, pos);
         recv_buffer_.erase(0, pos + 1);
-        handle_protocol_in(buffer);
         std::cout << buffer << '\n';
     }
 }
@@ -207,6 +208,7 @@ bool chat::ChatClient::handle_socket_recv()
         }
         if (size == 0)
         {
+            chat::log::info("server closed the connection");
             return false;
         }
         if (errno == EINTR)
@@ -217,6 +219,7 @@ bool chat::ChatClient::handle_socket_recv()
         {
             return true;
         }
+        chat::log::system_error("receive from server", errno);
         return false;
     }
     return false;
@@ -245,23 +248,11 @@ bool chat::ChatClient::handle_socket_send()
             update_socket_events(POLLIN | POLLOUT | POLLRDHUP);
             return true;
         }
+        chat::log::system_error("send to server", errno);
         return false;
     }
     update_socket_events(POLLIN | POLLRDHUP);
     return true;
-}
-
-void chat::ChatClient::handle_protocol_in(std::string &buffer)
-{
-    // pass
-}
-
-void chat::ChatClient::handle_protocol_out(std::string &buffer)
-{
-    if (buffer.empty() || buffer.back() != '\n')
-    {
-        buffer += '\n';
-    }
 }
 
 void chat::ChatClient::update_socket_events(int events)
@@ -278,7 +269,7 @@ void chat::ChatClient::clean_up() noexcept
         socket_fd_ = -1;
         if (::close(fd) == -1)
         {
-            std::perror("close");
+            chat::log::system_error("close client socket", errno);
         }
     }
     fds_.clear();

@@ -1,6 +1,6 @@
 #include "server/epoll_server.h"
+#include "common/logger.h"
 
-#include <iostream>
 #include <cstdlib>
 
 int main()
@@ -9,7 +9,7 @@ int main()
     chat::EpollServer server(port);
     if (!server.start())
     {
-        std::cerr << "服务器启动失败\n";
+        chat::log::error("failed to start the server");
         return EXIT_FAILURE;
     }
     server.run();
